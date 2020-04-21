@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 target
 target/**
 
@@ -11,12 +12,24 @@ test/**
 
 # Compiled class file
 *.class
+=======
+# Compiled class file
+*.class
+target
+target/**
 
 # Log file
 *.log
 
 # BlueJ files
 *.ctxt
+<<<<<<< HEAD
+=======
+*.iml
+.idea
+.idea/**
+test
+test/**
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -31,4 +44,7 @@ test/**
 *.rar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+<<<<<<< HEAD
+hs_err_pid*
+=======
 hs_err_pid*
