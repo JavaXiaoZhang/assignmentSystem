@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zq.mapper.TaskMapper">
+  <resultMap id="BaseResultMap" type="com.zq.entity.Task">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="task_desc" jdbcType="VARCHAR" property="taskDesc" />
+    <result column="task_type" jdbcType="CHAR" property="taskType" />
+    <result column="choice_mode" jdbcType="CHAR" property="choiceMode" />
+    <result column="start_time" jdbcType="CHAR" property="startTime" />
+    <result column="dead_time" jdbcType="CHAR" property="deadTime" />
+    <result column="finish_time" jdbcType="CHAR" property="finishTime" />
+    <result column="filename" jdbcType="VARCHAR" property="filename" />
+    <result column="filepath" jdbcType="VARCHAR" property="filepath" />
+    <result column="is_delete" jdbcType="CHAR" property="isDelete" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_admin" jdbcType="CHAR" property="isAdmin" />
+    <result column="grade" jdbcType="CHAR" property="grade" />
+    <association property="content" javaType="com.zq.entity.TaskContent">
+      <id column="content_id" jdbcType="BIGINT" property="id"></id>
+      <result column="username" jdbcType="VARCHAR" property="username" />
+      <result column="content" jdbcType="VARCHAR" property="content" />
+      <result column="contentFilepath" jdbcType="VARCHAR" property="filepath" />
+      <result column="contentFilename" jdbcType="VARCHAR" property="filename" />
+      <result column="content_updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="is_delete" jdbcType="CHAR" property="isDelete" />
+      <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    </association>
+  </resultMap>
+  <resultMap id="ContentResultMap" type="com.zq.entity.TaskContent">
+      <id column="id" jdbcType="BIGINT" property="id"></id>
+      <result column="username" jdbcType="VARCHAR" property="username" />
+      <result column="content" jdbcType="VARCHAR" property="content" />
+      <result column="grade" jdbcType="CHAR" property="grade" />
+      <result column="filepath" jdbcType="VARCHAR" property="contentFilepath" />
+      <result column="filename" jdbcType="VARCHAR" property="contentFilename" />
+      <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+  </resultMap>
+  <resultMap id="ClassResultMap" type="com.zq.entity.ClassEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="classname" jdbcType="VARCHAR" property="classname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, task_name, task_desc, task_type, start_time, dead_time, finish_time, filename, filepath,
+    is_delete, update_user, is_admin, grade, content, contentFilepath, contentFilename, choice_mode
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_task
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    update t_task set is_delete='1'
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <insert id="insert" parameterType="com.zq.entity.Task">
+    insert into t_task (id, task_name, task_desc, 
+      task_type, dead_time, finish_time, 
+      filename, filepath, is_delete, 
+      update_user, update_time)
+    values (#{id,jdbcType=BIGINT}, #{taskName,jdbcType=VARCHAR}, #{taskDesc,jdbcType=VARCHAR}, 
+      #{taskType,jdbcType=CHAR}, #{deadTime,jdbcType=CHAR}, #{finishTime,jdbcType=CHAR}, 
+      #{filename,jdbcType=VARCHAR}, #{filepath,jdbcType=VARCHAR}, #{isDelete,jdbcType=CHAR}, 
+      #{updateUser,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zq.entity.Task">
+    insert into t_task
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
+      <if test="taskDesc != null">
+        task_desc,
+      </if>
+      <if test="taskType != null">
+        task_type,
+      </if>
+      <if test="deadTime != null">
+        dead_time,
+      </if>
+      <if test="finishTime != null">
+        finish_time,
+      </if>
+      <if test="filename != null">
+        filename,
+      </if>
+      <if test="filepath != null">
+        filepath,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDesc != null">
+        #{taskDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null">
+        #{taskType,jdbcType=CHAR},
+      </if>
+      <if test="deadTime != null">
+        #{deadTime,jdbcType=CHAR},
+      </if>
+      <if test="finishTime != null">
+        #{finishTime,jdbcType=CHAR},
+      </if>
+      <if test="filename != null">
+        #{filename,jdbcType=VARCHAR},
+      </if>
+      <if test="filepath != null">
+        #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zq.entity.Task">
+    update t_task
+    <set>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDesc != null">
+        task_desc = #{taskDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null">
+        task_type = #{taskType,jdbcType=CHAR},
+      </if>
+      <if test="deadTime != null">
+        dead_time = #{deadTime,jdbcType=CHAR},
+      </if>
+      <if test="finishTime != null">
+        finish_time = #{finishTime,jdbcType=CHAR},
+      </if>
+      <if test="filename != null">
+        filename = #{filename,jdbcType=VARCHAR},
+      </if>
+      <if test="filepath != null">
+        filepath = #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zq.entity.Task">
+    update t_task
+    set task_name = #{taskName,jdbcType=VARCHAR},
+      task_desc = #{taskDesc,jdbcType=VARCHAR},
+      task_type = #{taskType,jdbcType=CHAR},
+      dead_time = #{deadTime,jdbcType=CHAR},
+      finish_time = #{finishTime,jdbcType=CHAR},
+      filename = #{filename,jdbcType=VARCHAR},
+      filepath = #{filepath,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=CHAR},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <insert id="insertTaskWithReturn" useGeneratedKeys="true" keyProperty="id">
+    insert into t_task (`task_name`, `task_desc`, `task_type`, start_time, dead_time,
+    <if test="filename != null">
+      filename,
+    </if>
+    <if test="filepath != null">
+      filepath,
+    </if>
+    update_user)
+    values (#{taskName}, #{taskDesc}, #{taskType}, #{startTime},#{deadTime},
+    <if test="filename != null">
+      #{filename},
+    </if>
+    <if test="filepath != null">
+      #{filepath},
+    </if>
+    #{updateUser})
+  </insert>
+
+  <insert id="insertRelationWithAdmin">
+    insert into t_user_task (user_id, task_id, is_admin,update_user) values (#{userId},#{taskId}, '1', #{userId})
+  </insert>
+  <!--<insert id="insertRelationWithPersonal">
+    insert into t_user_task (user_id, task_id, is_admin,update_user) values (#{userId},#{taskId}, '2', #{userId})
+  </insert>-->
+  <insert id="insertRelationWithClass">
+    insert into t_class_task (class_id, task_id,update_user) values
+    <foreach collection="classIdArr" item="classId" separator=",">
+        (#{classId},#{taskId} ,#{userId})
+    </foreach>
+  </insert>
+
+  <insert id="insertRelationWithUsers">
+    insert into t_user_task (user_id, task_id,update_user) values
+    <foreach collection="memberArr" item="member" separator=",">
+      (#{member}, #{taskId}, #{userId})
+    </foreach>
+  </insert>
+  <select id="getUserIdByClassIds" parameterType="java.lang.String" resultType="java.lang.Long">
+    select DISTINCT u.id from t_user u join t_user_class uc on u.id = uc.user_id and u.is_delete='0'
+            and uc.is_delete='0' and uc.is_teacher = '0'
+    where uc.class_id in ${classIds}
+  </select>
+  <insert id="insertRelationWithClassmates">
+    insert into t_user_task (user_id, task_id,update_user) values
+    <foreach collection="userIdList" item="member" separator=",">
+      (#{member}, #{taskId}, #{userId})
+    </foreach>
+  </insert>
+
+  <select id="getTaskByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select t.*,ut.is_admin,ut.grade, ut.content_id, tc.content, tc.filename as contentFilename,
+        tc.filepath as contentFilepath, tc.update_time as content_updateTime, tc.is_delete, tc.update_user, u.username
+        from t_task t join t_user_task ut
+        on t.id = ut.task_id and t.is_delete='0' and ut.is_delete='0' left join t_taskcontent tc on tc.id = ut.content_id
+        join t_user u on u.id = ut.user_id and u.is_delete = '0'
+        where t.task_type = '0' and ut.user_id = #{userId}
+  </select>
+  <!--<select id="getTotalContent" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select count(1) from t_user_task
+        where task_id = #{taskId} and is_admin = '0' and  is_delete='0'
+  </select>-->
+  <select id="queryContentListByTaskId" parameterType="java.lang.Long" resultMap="ContentResultMap">
+    select ut.grade, tc.* , u.username
+        from t_user_task ut left join t_taskcontent tc on ut.content_id = tc.id  and ut.is_delete='0' and tc.is_delete='0'
+        join t_user u on u.id = ut.user_id and u.is_delete = '0'
+        where ut.task_id = #{taskId} and ut.is_admin = '0'
+  </select>
+  <select id="getClassListByTaskId" parameterType="java.lang.Long" resultMap="ClassResultMap">
+    select t_class.id,t_class.classname
+        from t_class_task ct join t_class on ct.class_id = t_class.id and ct.is_delete='0' and t_class.is_delete='0'
+        where ct.task_id = #{taskId}
+  </select>
+  <select id="getUserIdListByTaskId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select u.id from t_user u join t_user_task ut  on u.id = ut.user_id and u.is_delete='0' and ut.is_delete='0'
+        where ut.task_id = #{taskId}
+  </select>
+</mapper>

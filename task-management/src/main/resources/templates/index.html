@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="http://localhost:9081/task-management/" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>任务管理系统主页</title>
+    <!--bootstrap.min.css-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <!--日期css-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+</head>
+<body>
+<!--
+	<nav class="navbar navbar-expand-md navbar-light bg-light">
+	<a href="#" class="navbar-brand">网战天下</a>
+	<button class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+				<a href="#" class="nav-link active">首页</a>
+			</li>
+			<li class="nav-item">
+				<a href="#" class="nav-link">产品</a>
+			</li>
+			<li class="nav-item">
+				<a href="#" class="nav-link">最新资讯</a>
+			</li>
+			<li class="nav-item">
+				<a href="#" class="nav-link disabled">公司简介</a>
+			</li>
+		</ul>
+		<form action="" class="form-inline my-2 my-md-0">
+			<input type="text" class="form-control mr-sm-2" placeholder="请输入关键字">
+			<button class="btn btn-outline-success my-2 my-md-0">搜索</button>
+		</form>
+	</div>
+</nav>-->
+<div class="container-fluid">
+    <div class="row sticky-top">
+        <div class="col-md-12">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" th:href="@{task/index/{userId}(userId=${userId})}">
+                    <i class="fa fa-hand-o-right" aria-hidden="true" style="font-size: 30px;color: blue;"></i>任务管理系统
+                </a>
+                <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between justify-content-start" id="navbarNav">
+                    <div class="navbar-nav">
+                        <a th:href="@{task/index/{userId}(userId=${userId})}" class="nav-item nav-link active">首页</a>
+                        <a href="#" class="nav-item nav-link">知识问答</a>
+                        <span class="navbar-text ml-2">积分排名1</span>
+                    </div>
+                    <form action="" class="form-inline my-2 my-md-0">
+                        <input type="text" class="form-control mr-sm-2" placeholder="请输入关键字" style="width: 500px;">
+                        <button class="btn btn-primary my-2 my-md-0">搜索</button>
+                    </form>
+                    <li class="nav-item dropdown list-unstyled">
+                        <a href="" class="nav-link" data-toggle="dropdown">
+                            <i class="fa fa-commenting-o" aria-hidden="true" style="font-size: 30px;color: grey"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item">aaa</a>
+                            <a href="#" class="dropdown-item">bbb</a>
+                            <a href="#" class="dropdown-item">ccc</a>
+                        </div>
+                    </li>
+                    <a href="task/logout" class="btn btn-danger my-2 my-md-0" id="logout">退出登录</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div id="taskSystem"></div>
+</div>
+<input hidden="hidden" id="userId" th:value="${userId}">
+<!--<input hidden="hidden" id="classList" th:value="${classList}">-->
+<input hidden="hidden" id="role" th:value="${role}">
+<script src="js/jquery-3.4.1.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.bootcss.com/moment.js/2.22.0/moment-with-locales.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<script type="text/javascript">
+    const userId = $('#userId').val();
+    const role = $('#role').val();
+
+    //console.log("classList:"+classList+"--role:"+role)
+    $(function () {
+        $("#taskSystem").load("tasksystem.html");
+
+        /*$(".my-sm-0").click(function () {
+            $("#taskSystem").load("http://localhost:9081/quiz/");
+        })*/
+
+
+        /* //判断当前浏览器是否支持websocket
+   if (!window.WebSocket) {
+       alert("当前浏览器不支持webSocket，请升级！");
+   }
+   //实例化webSocket
+   const socket = new WebSocket("ws://127.0.0.1:8888/ws");
+   //设置websocket的各个生命周期方法
+   socket.onopen = function () {
+       console.log("建立连接");
+       //主动发送当前的用户信息给到服务端
+       socket.send("{\"msgType\":1,\"data\":{\"userId\":"+userId+"}}");
+   };
+   socket.onmessage = function(response){
+       alert(response.data)
+       /!*let receiveMsg = document.getElementById("receiveMsg");
+       let html = receiveMsg.innerHTML;
+       receiveMsg.innerHTML = html + "<br/>" + e.data;*!/
+   }
+
+   //发送心跳消息
+   setInterval(function () {
+       socket.send("{\"msgType\":2}");
+   }, 3000);*/
+    })
+</script>
+</body>
+</html>
+
+

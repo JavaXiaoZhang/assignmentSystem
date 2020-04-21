@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zq.mapper.ClassMapper">
+  <resultMap id="BaseResultMap" type="com.zq.entity.ClassEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="classname" jdbcType="VARCHAR" property="classname" />
+    <result column="total" jdbcType="INTEGER" property="total" />
+    <result column="is_delete" jdbcType="CHAR" property="isDelete" />
+    <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, classname, total, is_delete, update_user, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_class
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_class
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.zq.entity.ClassEntity">
+    insert into t_class (id, classname, total, 
+      is_delete, update_user, update_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{classname,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER}, 
+      #{isDelete,jdbcType=CHAR}, #{updateUser,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zq.entity.ClassEntity">
+    insert into t_class
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="classname != null">
+        classname,
+      </if>
+      <if test="total != null">
+        total,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="classname != null">
+        #{classname,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        #{total,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zq.entity.ClassEntity">
+    update t_class
+    <set>
+      <if test="classname != null">
+        classname = #{classname,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        total = #{total,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zq.entity.ClassEntity">
+    update t_class
+    set classname = #{classname,jdbcType=VARCHAR},
+      total = #{total,jdbcType=INTEGER},
+      is_delete = #{isDelete,jdbcType=CHAR},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="getClassListByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT c.* FROM t_class c JOIN t_user_class uc ON c.id = uc.class_id and uc.is_delete = '0' and c.is_delete='0'
+        WHERE
+        <if test="userId != null and userId != ''">
+            uc.user_id = #{userId} and
+        </if>
+        uc.is_teacher = '1'
+  </select>
+  <insert id="setRelation">
+    insert into t_user_class (user_id, class_id, update_user) values
+    <foreach collection="list" item="num" separator=",">
+      (#{num}, #{classId}, #{userId})
+    </foreach>
+  </insert>
+</mapper>
