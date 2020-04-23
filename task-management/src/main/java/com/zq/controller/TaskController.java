@@ -288,6 +288,11 @@ public class TaskController {
         return null;
     }
 
+    @DeleteMapping("delTaskById/{taskId}/{userId}")
+    @ResponseBody
+    public void delTaskById(@PathVariable("userId") Long userId, @PathVariable("taskId") Long taskId){
+        taskService.deleteTask(userId, taskId);
+    }
 
     /*=====================================================*/
     @GetMapping("url/{url}")

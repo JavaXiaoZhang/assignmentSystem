@@ -170,7 +170,7 @@
                     <div class="w-100"></div>
                     <span class="badge-light">截止时间：2020-04-20 9:00</span>
                     <div class="w-100"></div>
-                    <span class="badge-light">任务状态：待批阅</span>
+                    <span class="badge-light">任务状态：已批阅</span>
                 </div>
                 <div class="card-footer">
                     <span class="badge-success float-left">85分</span>
@@ -190,7 +190,7 @@
                     <label>
                         任务描述
                     </label>
-                    <textarea type="text" class="form-control" name="taskDesc" required></textarea>
+                    <textarea rows="10" type="text" class="form-control" id="taskDesc" name="taskDesc" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="taskChoice">任务模式</label>
@@ -259,12 +259,42 @@
                 </button>
             </form>
         </div>
-        <div class="tab-pane fade" id="tab4">任务统计</div>
+        <div class="tab-pane fade" id="tab4">
+            做展示页面
+        </div>
         <div class="tab-pane fade" id="tab5">
             查看任务详情
             <button type="button" class="btn btn-primary" data-toggle="tab" href="#tab6">修改</button>
         </div>
         <div class="tab-pane fade" id="tab6">修改任务</div>
+    </div>
+
+    <div class="modal" id="modal-container" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        8000116377 张迁
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <h5 >
+                            任务完成内容
+                        </h5>
+                        <span class="badge-pill d-block">任务完成内容</span>
+                        <a href="${item.filepath}" download="${item.filename}" class="${item.filename==null?'hide':''}">${item.filename}</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="text" class="input-mini form-control-plaintext" value="99分" readonly/>
+                    <button class="button btn-primary">修改</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
@@ -290,6 +320,7 @@
         })
 
         let task;
+        let submitted = 0;
         /*点击任务看板的查看按钮*/
         $('body').on('click', '.showTaskInfo', function () {
             let taskId = $(this).attr('name');
@@ -299,6 +330,7 @@
                 success: function (data) {
                     console.log(data)
                     task = data;
+                    let total = 0;
                     if (data!=null){
                         document.getElementById('tab5').innerHTML = initTab5(data);
                         /*隐藏控件*/
@@ -316,7 +348,10 @@
                         if (data.reviewedTaskContentList!=null){
                             initTaskContent(data.reviewedTaskContentList, document.getElementById('reviewed'));
                         }
+                        total = data.unReviewedTaskContentList.length + data.reviewedTaskContentList.length;
                     }
+                    $('#unSubmit').text('未提交：'+ (total-submitted) +'人');
+                    $('#submitted').text('已提交：'+submitted+'人');
                 }
             })
         })
@@ -424,6 +459,8 @@
         //点击添加
         $('#addTaskBtn').click(function () {
             $('.updateUser').val(userId)
+            let content=$('#taskDesc').val();
+            $('#taskDesc').val(content.replace(/\n/g, '<br/>').replace(/\s/g, ' '));
             $("#addTaskForm").submit();
         })
 
@@ -435,15 +472,52 @@
 
             //隐藏修改按钮，显示提交按钮
             $('#modifyTaskBtn').attr("hidden",true);
+            $('#delTaskBtn').attr("hidden",true);
             $('#submitModifyTaskBtn').attr("hidden",false);
             return false;
         });
 
         //修改后点击提交
+        $("body").on('click','#delTaskBtn',function(){
+            let taskId = $(this).attr('name');
+            $.ajax({
+                url: 'task/delTaskById/'+ taskId + "/" + userId,
+                method: 'DELETE',
+                success: function () {
+                    location.reload();
+                }
+            })
+        });
+
+        //修改后点击提交
         $("body").on('click','#submitModifyTaskBtn',function(){
-            $('.updateUser').val(userId)
+            $('.updateUser').val(userId);
+            let content=$('#taskDesc').val();
+            msg = content.replace(/\n/g, '<br/>').replace(/\s/g, ' ');
             $("#modifyTaskForm").submit();
         });
+
+        //点击任务，弹出模态框
+        $("body").on('show.bs.modal', '#modal-container', function (event) {
+            let button = $(event.relatedTarget);
+            //设置title
+            let title = button.data('title');
+            let modal = $(this);
+            modal.find('.modal-title').text(title);
+            //初始化body
+            let taskInfoId = button.data('id');
+
+        });
+        //关闭模态框，对分数做修改，并修改任务状态为reviewed
+        $("body").on('hide.bs.modal', '#modal-container', function (event) {
+            //清除缓存，避免出现重复事件
+            $.ajax({cache: false})
+            //判断分数是否为空，或是否与原分数相同，然后对分数做修改，并修改任务状态为reviewed
+            $('#taskSystem').load('task/queryTaskInfoById/'+taskId+'/'+isAdmin+'/'+userId);
+
+            //最后刷新页面，重新触发点击事件或reload
+        })
+
 
         /*使用动态渲染，实现对用户的添加*/
         function addUserToSpan(arr){
@@ -504,7 +578,7 @@
                         任务描述
                     </h5>
                     <span class="badge-pill d-block">${item.taskDesc}</span>
-                    <textarea type="text" class="form-control" name="taskDesc" hidden required></textarea>
+                    <textarea rows="20" cols="20" type="text" class="text-area" name="taskDesc" hidden required></textarea>
                     <hr>
                 </div>
 
@@ -555,13 +629,22 @@
                     <input type="file" class="form-control-file" name="file" hidden/>
                 </div>
                 <input name="updateUser" class="updateUser" hidden/>
-                <button class="btn btn-primary ${(item.isAdmin == 0||item.reviewState==1) ? 'hide' : ''}" id="modifyTaskBtn">
-                    修改
-                </button>
+                <div class="form-group">
+                    <button class="btn btn-primary ${(item.isAdmin == 0||item.statusShow==1) ? 'hide' : ''}" id="modifyTaskBtn">
+                        修改
+                    </button>
+                    <button class="btn btn-danger ${(item.isAdmin == 0||item.statusShow==1) ? 'hide' : ''}" id="delTaskBtn" name="${item.id}">
+                        删除
+                    </button>
+                </div>
                 <button class="btn btn-primary" id="submitModifyTaskBtn" hidden>
                     提交
                 </button>
             </form>
+
+            <h5 class="badge badge-danger" id="unSubmit">未提交：0人</h5>
+            <h5 class="badge badge-success" id="submitted">已提交：0人</h5>
+
             <div class="${item.isAdmin == 0? 'hide' : ''}">
             <h4 class="mt-5">待批阅</h4>
             <div id="review" class="row mb-3">
@@ -641,7 +724,8 @@
         function initTaskContent(arr, dom) {
             let html = arr.map(item=>{
                 if (item!=null && item.content!=null){
-                    return `<a href="#" class="w-100 ml-3">${item.updateUser} ${item.username} ${item.grade==undefined?'':(item.grade+'分')}</a>`
+                    submitted++;
+                    return `<a data-toggle="modal" href="#modal-container" class="w-100 ml-3">${item.updateUser} ${item.username} ${item.grade==undefined?'':(item.grade+'分')}</a>`
                 }
             }).join('');
             dom.innerHTML = html;

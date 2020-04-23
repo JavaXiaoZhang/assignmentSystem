@@ -266,4 +266,8 @@
     select u.id from t_user u join t_user_task ut  on u.id = ut.user_id and u.is_delete='0' and ut.is_delete='0'
         where ut.task_id = #{taskId}
   </select>
+
+  <update id="deleteTask">
+    update t_task set is_delete = '1', update_user = #{userId}, update_time = now() where id=#{taskId}
+  </update>
 </mapper>
