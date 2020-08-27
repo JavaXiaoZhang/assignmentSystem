@@ -63,3 +63,23 @@ rocketmq:
   name-server: 192.168.33.10:9876
   producer:
     group: pp
+
+# feign gzip
+# 局部配置。只配置feign技术相关的http请求-应答中的gzip压缩。
+# 配置的是application client和application service之间通讯是否使用gzip做数据压缩。
+# 和浏览器到application client之间的通讯无关。
+feign:
+  compression:
+    request:
+      # 开启feign请求时的压缩， application client -> application service
+      enabled: true
+      # 设置可以压缩的请求/响应的类型。
+      mime-types: text/xml,application/xml,application/json
+      # 当请求的数据容量达到多少的时候，使用压缩。默认是2048字节。
+      min-request-size: 512
+  # 开启feign技术响应时的压缩，  application service -> application client
+    response:
+      enabled: true
+    # 替换为HttpClient客户端（使用HTTP连接池提供性能）
+    httpclient:
+      enabled: true

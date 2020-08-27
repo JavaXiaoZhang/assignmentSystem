@@ -20,8 +20,8 @@ import java.util.Map;
  * @author ZQ
  * @Date 2020/4/1
  */
-@Component
-@RocketMQMessageListener(topic = "overtime", consumerGroup = "myconsumer")
+//@Component
+//@RocketMQMessageListener(topic = "overtime", consumerGroup = "myconsumer")
 public class MQConsumer implements RocketMQListener {
 
     private final static Logger log = LoggerFactory.getLogger(MQConsumer.class);

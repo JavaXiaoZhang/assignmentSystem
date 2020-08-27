@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +24,11 @@ public class RemindTask {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Resource
-    private RocketMQTemplate rocketMQTemplate;
+//    @Resource
+//    private RocketMQTemplate rocketMQTemplate;
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -41,7 +45,8 @@ public class RemindTask {
         if (set!=null && set.size()!=0){
             for (Object o : set) {
                 //通过mq发送给msg模块
-                rocketMQTemplate.convertAndSend("overtime",o);
+                //rocketMQTemplate.convertAndSend("overtime",o);
+                kafkaTemplate.send("overtime", o);
                 log.info(o+"将在一天内过期！");
             }
         }
